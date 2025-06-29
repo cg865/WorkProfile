@@ -1,0 +1,51 @@
+name: Work Profile CI/CD Pipeline (GHCR)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin  
+
+      - name: Pull Docker image from Docker Hub
+        run: |
+          docker pull cg865/workprofile:latest
+
+      - name: Run container from pulled image
+        run: |
+          docker run -d -p 8080:5000 --name workprofile_container cg865/workprofile:latest
+          sleep 5  # Wait for the app to start
+
+      - name: Test "/" endpoint
+        run: |
+          curl --fail http://localhost:8080/ || exit 1
+
+      - name: Test "/health" endpoint
+        run: |
+          curl --fail http://localhost:8080/health || exit 1
+
+      - name: Stop and remove container
+        run: |
+          docker stop workprofile_container
+          docker rm workprofile_container
+
+      - name: Retag image with Git SHA
+        run: |
+          SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+          docker tag cg865/workprofile:latest ghcr.io/${{ github.repository_owner }}/workprofile:latest
+          docker tag cg865/workprofile:latest ghcr.io/${{ github.repository_owner }}/workprofile:$SHORT_SHA
+
+      - name: Push image with both tags to GHCR
+        run: |
+          SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+          docker push ghcr.io/${{ github.repository_owner }}/workprofile:latest
+          docker push ghcr.io/${{ github.repository_owner }}/workprofile:$SHORT_SHA
