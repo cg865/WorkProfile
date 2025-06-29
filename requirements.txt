@@ -12,3 +12,4 @@ protobuf==4.21.12
 Werkzeug==3.0.1
 gunicorn==21.2.0
 psycopg2-binary==2.9.10
+psutil==5.9.5
