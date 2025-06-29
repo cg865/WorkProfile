@@ -4,6 +4,8 @@ from os import environ
 from dbcontext import db_data, db_delete, db_add, health_check
 from person import Person
 import logging
+from flask import jsonify
+import psutil, time
 
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
@@ -40,16 +42,34 @@ def add():
 
 @app.route("/health")
 def health():
+    health_ok = True
     health_messages = []
-    # Simple application health check
+
+    start = time.time()
+
     try:
         app.logger.info("Application is running")
         health_messages.append("Application: Healthy")
+
+        # memory check
+        mem = psutil.virtual_memory()
+        health_messages.append(f"Memory usage: {mem.percent}%")
+
     except Exception as e:
         app.logger.error(f"Application health check failed: {e}")
         health_messages.append("Application: Not Healthy")
-    combined_health_status = "\\\\n".join(health_messages)
-    return combined_health_status
+        health_ok = False
+
+    end = time.time()
+    response_time = round(end - start, 4)
+    health_messages.append(f"Response time: {response_time} seconds")
+
+    response = {
+        "status": "ok" if health_ok else "error",
+        "messages": health_messages
+    }
+
+    return jsonify(response), 200 if health_ok else 503
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
