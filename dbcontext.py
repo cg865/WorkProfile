@@ -58,7 +58,10 @@ def db_data() -> list[Person]:
 def db_delete(id: int) -> Response:
     if not db_host:
         return Response(status=200)
-    cnx = mysql.connector.connect(**config)
+    try:
+        cnx = mysql.connector.connect(**config)
+    except mysql.connector.Error:
+        return Response(status=500)
     status = 200
     if cnx.is_connected():
         cursor = cnx.cursor()
@@ -77,7 +80,10 @@ def db_delete(id: int) -> Response:
 def db_add(person: Person) -> Response:
     if not db_host:
         return Response(status=200)
-    cnx = mysql.connector.connect(**config)
+    try:
+        cnx = mysql.connector.connect(**config)
+    except mysql.connector.Error:
+        return Response(status=500)
     status = 200
     personId = 0
     if cnx.is_connected():
@@ -106,18 +112,21 @@ def db_add(person: Person) -> Response:
 
 
 def health_check() -> bool:
-    if not db_host:
-        return True
-    cnx = mysql.connector.connect(**config)
-    response = False
-    if cnx.is_connected():
-        cursor = cnx.cursor()
-        try:
-            cursor.execute("SELECT 1")
-            cursor.fetchall()
-            response = True
-        finally:
-            if cnx.is_connected():
+    if not db_host or not db_user or not db_pass or not db_name:
+        return False
+    try:
+        cnx = mysql.connector.connect(**config)
+        if cnx.is_connected():
+            cursor = cnx.cursor()
+            try:
+                cursor.execute("SELECT 1")
+                cursor.fetchall()
+                response = True
+            finally:
                 cursor.close()
                 cnx.close()
-    return response
+        return False
+    except mysql.connector.Error as err:
+        print(f"Health check DB error: {err}")
+        return False
+

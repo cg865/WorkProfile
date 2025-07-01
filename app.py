@@ -21,8 +21,12 @@ print("DB_USER:", environ.get("DB_USER"))
 print("DB_PASSWORD:", environ.get("DB_PASSWORD"))
 print("DB_NAME:", environ.get("DB_NAME"))
 
-if not health_check():
-    host_name = "no_host"
+try:
+    if not health_check():
+        app.logger.warning("Database not healthy at startup")
+except Exception as e:
+    app.logger.error(f"Health check failed at startup: {e}")
+
 
 db_host = environ.get("DB_HOST")
 backend = environ.get("BACKEND") or "http://localhost"
