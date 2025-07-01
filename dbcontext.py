@@ -43,7 +43,7 @@ def db_data() -> list[Person]:
     if cnx.is_connected():
         cursor = cnx.cursor()
         try:
-            cursor.execute("SELECT * FROM people")
+            cursor.execute("SELECT id, firstname, lastname, age, address, workplace FROM people")
             for item in cursor:
                 result.append(
                     Person(item[0], item[1], item[2], item[3], item[4], item[5])
@@ -90,7 +90,7 @@ def db_add(person: Person) -> Response:
         cursor = cnx.cursor()
         try:
             cursor.execute(
-                "INSERT INTO people (firstName, lastName, age, address, workplace) "
+                "INSERT INTO people (firstname, lastname, age, address, workplace) "
                 "VALUES (%s, %s, %s, %s, %s)",
                 (
                     person.first_name,
