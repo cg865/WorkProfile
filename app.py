@@ -54,6 +54,13 @@ def health():
         # memory check
         mem = psutil.virtual_memory()
         health_messages.append(f"Memory usage: {mem.percent}%")
+        
+        if health_check():
+            health_messages.append("Database: Healthy")
+        else:
+            app.logger.error("Database health check failed")
+            health_messages.append("Database: Not Healthy")
+            health_ok = False
 
     except Exception as e:
         app.logger.error(f"Application health check failed: {e}")
