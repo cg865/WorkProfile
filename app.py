@@ -15,6 +15,12 @@ app.logger.addHandler(handler)
 
 host_name = environ.get("HOSTNAME")
 
+print("🔍 Environment variables received by Flask:")
+print("DB_HOST:", environ.get("DB_HOST"))
+print("DB_USER:", environ.get("DB_USER"))
+print("DB_PASSWORD:", environ.get("DB_PASSWORD"))
+print("DB_NAME:", environ.get("DB_NAME"))
+
 if not health_check():
     host_name = "no_host"
 

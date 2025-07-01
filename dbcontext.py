@@ -4,7 +4,7 @@ from person import Person
 from flask import Response
 
 db_user = environ.get("DB_USER")
-db_pass = environ.get("DB_PASS")
+db_pass = environ.get("DB_PASSWORD")
 db_host = environ.get("DB_HOST")
 db_name = environ.get("DB_NAME")
 
@@ -36,7 +36,7 @@ def db_data() -> list[Person]:
         return demo_data()
 
     if not (db_user and db_pass):
-        raise Exception("DB_USER and DB_PASS are not set")
+        raise Exception("DB_USER and DB_PASSWORD are not set")
 
     cnx = mysql.connector.connect(**config)
     result = []
