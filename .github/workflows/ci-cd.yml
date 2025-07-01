@@ -40,8 +40,6 @@ jobs:
           pytest --disable-warnings tests/test_app.py || (echo "❌ Unit tests failed" && exit 1)
           echo "✅ Unit tests passed"
 
-     
-
       - name: Generate image tag
         id: generate-tag
         run: |
@@ -55,7 +53,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t ghcr.io/${{ github.repository_owner }}/workprofile:latest \
-          -t ghcr.io/${{ github.repository_owner }}/workprofile:${TAG} .
+          -t ghcr.io/${{ github.repository_owner }}/workprofile:${{steps.generate-tag.outputs.tag}} .
 
       - name: Run container from image
         run: |
