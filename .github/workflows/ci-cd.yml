@@ -110,7 +110,7 @@ jobs:
       - name: Docker Compose Logs (for debugging if failed)
         if: failure()
         run: |
-          docker-compose logs workprofile-app
+          docker-compose logs workprofile
           docker-compose logs mysql-db
 
       - name: Stop and clean up docker-compose environment
