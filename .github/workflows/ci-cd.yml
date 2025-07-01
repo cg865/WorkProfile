@@ -45,8 +45,8 @@ jobs:
       - name: Generate image tag
         id: generate-tag
         run: |
-          VERSION="v1.0.${{ github.run_number }}"
-          echo "tag=${VERSION}" >> $GITHUB_OUTPUT
+          TAG="v1.0.${{ github.run_number }}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
           echo "Generated tag: ${TAG}"
 
       - name: Log in to GitHub Container Registry
