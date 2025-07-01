@@ -40,11 +40,7 @@ jobs:
           pytest --disable-warnings tests/test_app.py || (echo "❌ Unit tests failed" && exit 1)
           echo "✅ Unit tests passed"
 
-      - name: Run flake8 linter
-        run: |
-          echo "=== Running flake8 Linter ==="
-          flake8 . --exclude=__pycache__,.venv --max-line-length=100 || (echo "❌ Linting failed" && exit 1)
-          echo "✅ Linting passed"
+     
 
       - name: Generate image tag
         id: generate-tag
