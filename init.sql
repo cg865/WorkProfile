@@ -1,5 +1,6 @@
 CREATE DATABASE IF NOT EXISTS `exampleDb`;
-GRANT ALL PRIVILEGES ON `exampleDb` TO 'flaskapp'@'%' IDENTIFIED BY 'flaskapp' WITH GRANT OPTION;
+CREATE USER IF NOT EXISTS 'flaskapp'@'%' IDENTIFIED BY 'flaskapp';
+GRANT ALL PRIVILEGES ON `exampleDb`.* TO 'flaskapp'@'%';
 FLUSH PRIVILEGES;
 
 USE exampleDb;
