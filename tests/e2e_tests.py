@@ -11,7 +11,7 @@ def get(path="/", timeout=10):
     return requests.get(f"{NGINX_URL}{path}", timeout=timeout)
 
 
-def wait_for_stack(max_retries=30, delay=2):
+def wait_for_stack(max_retries=60, delay=2):
     """Wait for the complete 3-tier stack to be ready  (nginx → app → db)"""
     print("Waiting for 3-tier stack (nginx -> app -> database) to be ready...")
 

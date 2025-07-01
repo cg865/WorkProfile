@@ -8,9 +8,10 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx-compose.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - workprofile
+      workprofile:
+        condition: service_healthy
     networks:
       - nginx-network
 
@@ -21,9 +22,9 @@ services:
       - "5000:5000"
     environment:
       - DB_HOST=mysql
-      - DB_USER=root
-      - DB_PASSWORD=MySQL24
-      - DB_NAME=workprofile_db
+      - DB_USER=flaskapp
+      - DB_PASSWORD=flaskapp
+      - DB_NAME=exampleDb
     depends_on:
       mysql:
         condition: service_healthy
@@ -31,7 +32,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
     networks:
       - nginx-network
       - workprofile-network
@@ -50,9 +51,9 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 3s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pflaskapp"]
+      interval: 10s
+      timeout: 5s
       retries: 10
     networks:
       - workprofile-network
