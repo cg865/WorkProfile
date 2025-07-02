@@ -14,8 +14,29 @@ spec:
     spec:
       initContainers:
       - name: wait-for-mysql
-        image: busybox
-        command: ['sh', '-c', 'until nc -z mysql-service 3306; do echo waiting for mysql; sleep 2; done;']
+        image: mysql:5.7
+        env:
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: workprofile-config
+                key: DB_HOST
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: mysql-user
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: mysql-password
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: workprofile-config
+                key: DB_NAME
+        command: ['sh', '-c', 'until mysql -h "$MYSQL_HOST" -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" -e "SELECT 1"; do echo "Waiting for MySQL..."; sleep 3; done']
       containers:
       - name: workprofile
         image: ghcr.io/cg865/workprofile:latest 
