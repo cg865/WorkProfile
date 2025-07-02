@@ -76,6 +76,14 @@ jobs:
         run: |
           docker-compose up -d --build
           sleep 100  
+      
+      - name: Test "/" endpoint
+        run: |
+          curl --fail http://localhost:8080/ || exit 1
+
+      - name: Test "/health" endpoint
+        run: |
+          curl --fail http://localhost:8080/health || exit 1
 
       - name: Run E2E tests
         run: |
@@ -128,7 +136,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-k8s:
-    needs: push-image
+    needs: 
+      - build-test
+      - push-image
     runs-on: ubuntu-latest
 
     env:
@@ -202,12 +212,7 @@ jobs:
         
           echo "Workprofile deployment successful"
           kubectl get pods,svc,deployment -l app=workprofile
-
-  verify-deployment:
-    needs: deploy-k8s
-    runs-on: ubuntu-latest
-
-    steps:        
+  
       - name: Verify production-ready stack
         run: |
           echo "=== CD: Verifying Production-Ready Stack ==="
