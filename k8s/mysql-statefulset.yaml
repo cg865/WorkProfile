@@ -43,6 +43,8 @@ spec:
         volumeMounts:
         - name: mysql-storage
           mountPath: /var/lib/mysql
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d
         livenessProbe:
           exec:
             command:
@@ -67,6 +69,10 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+      volumes:
+      - name: init-script
+        configMap:
+          name: mysql-initdb-config
   volumeClaimTemplates:
   - metadata:
       name: mysql-storage
