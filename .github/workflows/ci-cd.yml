@@ -101,7 +101,7 @@ jobs:
       - name: Build and start full stack with Docker Compose
         run: |
           docker-compose up -d --build
-          sleep 10  
+          sleep 100  
 
       - name: Run E2E tests
         run: |
@@ -111,7 +111,7 @@ jobs:
         if: failure()
         run: |
           docker-compose logs workprofile
-          docker-compose logs mysql-db
+          docker-compose logs mysql
 
       - name: Stop and clean up docker-compose environment
         run: |

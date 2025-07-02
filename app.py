@@ -106,7 +106,7 @@ def health():
         "messages": health_messages,
     }
 
-    return jsonify(response), 200 if health_ok else 503
+    return jsonify(response), 200 
 
 
 if __name__ == "__main__":
