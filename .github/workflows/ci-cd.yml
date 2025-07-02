@@ -315,7 +315,7 @@ jobs:
           echo "5. Test production features:"
           echo "   # Test MySQL connectivity:"
           echo "   kubectl run mysql-client --image=mysql:5.7 -it --rm --restart=Never -- \\"
-          echo "     mysql -h mysql-service -u app_user -papp_password -D workprofile_db -e \"SHOW DATABASES;\""
+          echo "     mysql -h mysql-service -u flaskapp -pflaskapp -D exampleDb -e "SHOW DATABASES;\""
           echo ""
           echo "   # Test data persistence:"
           echo "   kubectl delete pod mysql-0"

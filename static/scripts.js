@@ -5,7 +5,7 @@
 function handlePersonClick(div, id) {
     const cssClass = div.className;
     if (cssClass === "person-disabled") { return; }
-    fetch(`${backend}/delete/${id}`, { method: "DELETE" })
+    fetch(`/delete/${id}`, { method: "DELETE" })
         .then(res => {
             if (res.status === 200) {
                 const parent = div.parentElement;
@@ -50,7 +50,7 @@ document.getElementById('addPersonForm').addEventListener('submit', function (ev
     const address = document.getElementById('address').value;
 
     // send put request with person object in body
-    fetch(`${backend}/add`, {
+    fetch("/add", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
