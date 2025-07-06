@@ -31,8 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest flake8
+          pip install -r requirements.txt pytest flake8
 
       - name: Run unit tests
         run:  |
@@ -75,7 +74,7 @@ jobs:
       - name: Build and start full stack with Docker Compose
         run: |
           docker-compose up -d --build
-          sleep 100  
+          sleep 50  
       
       - name: Test "/" endpoint
         run: |
@@ -89,7 +88,7 @@ jobs:
         run: |
           python tests/e2e_tests.py
 
-      - name: Docker Compose Logs (for debugging if failed)
+      - name: Docker Compose Logs (on failure)
         if: failure()
         run: |
           docker-compose logs workprofile
@@ -118,12 +117,12 @@ jobs:
           docker build -t ghcr.io/${{ github.repository_owner }}/workprofile:latest \
                       -t ghcr.io/${{ github.repository_owner }}/workprofile:${TAG} .
 
-      - name: Tag & Push
+      - name: Push Docker images
         run: |
           TAG="${{ needs.build-test.outputs.tag }}"
-          docker tag ghcr.io/${{ github.repository_owner }}/workprofile:latest ghcr.io/${{ github.repository_owner }}/workprofile:${TAG}
           docker push ghcr.io/${{ github.repository_owner }}/workprofile:latest
           docker push ghcr.io/${{ github.repository_owner }}/workprofile:${TAG}
+          
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -297,6 +296,7 @@ jobs:
           echo ""
           echo "2. Deploy MySQL infrastructure first:"
           echo "   kubectl apply -f k8s/mysql-secret.yaml"
+          echo "   kubectl create configmap mysql-initdb-config --from-file=init.sql=init.sql"
           echo "   kubectl apply -f k8s/mysql-statefulset.yaml"
           echo "   kubectl apply -f k8s/mysql-service.yaml"
           echo "   kubectl wait --for=condition=ready pod/mysql-0 --timeout=300s"
@@ -315,7 +315,7 @@ jobs:
           echo "5. Test production features:"
           echo "   # Test MySQL connectivity:"
           echo "   kubectl run mysql-client --image=mysql:5.7 -it --rm --restart=Never -- \\"
-          echo "     mysql -h mysql-service -u flaskapp -pflaskapp -D exampleDb -e "SHOW DATABASES;\""
+          echo "     mysql -h mysql-service -u flaskapp -pflaskapp -D exampleDb -e \"SHOW DATABASES;\""
           echo ""
           echo "   # Test data persistence:"
           echo "   kubectl delete pod mysql-0"

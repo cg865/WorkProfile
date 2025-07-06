@@ -9,6 +9,7 @@ services:
       - "8080:80"
     volumes:
       - ./nginx/nginx-compose.conf:/etc/nginx/conf.d/default.conf
+      - ./static:/usr/share/nginx/html/static
     depends_on:
       workprofile:
         condition: service_healthy
@@ -47,7 +48,7 @@ services:
       MYSQL_USER: flaskapp
       MYSQL_PASSWORD: flaskapp
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - mysql-data:/var/lib/mysql
