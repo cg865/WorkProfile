@@ -7,6 +7,12 @@ WorkProfile is a production-ready multi-tier web application built with Flask an
 ---
 
 ## Architecture
+
+# WorkProfile CI CD Pipeline
+
+![CI CD Pipeline WorkProfile](images/CI%20CD%20Pipeline.png)
+
+
 # Three-tier Architecture
 
 ![docker-compose WorkProfile](images/docker-compose.png)
@@ -135,8 +141,8 @@ To deploy manually on Killercoda environment:
     ```bash
     kubectl get service workprofile-service
     ```
-    # Note the NodePort (30000-32767 range)
-    # Use Killercoda Traffic Port Accessor with that port
+    ### Note the NodePort (30000-32767 range)
+    ### Use Killercoda Traffic Port Accessor with that port
 
 5. Test production features:
 
@@ -151,7 +157,7 @@ To deploy manually on Killercoda environment:
     kubectl delete pod mysql-0
     kubectl wait --for=condition=ready pod/mysql-0 --timeout=300s
     ```
-    # Verify your data still exists
+    ## Verify your data still exists
 
 - Check resource limits and probes:
     ```bash
